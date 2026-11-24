@@ -1,0 +1,19 @@
+---
+- name: Create /etc/xbps.d
+  ansible.builtin.file:
+    path: /etc/xbps.d
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+- name: Configure XBPS repositories
+  ansible.builtin.template:
+    src: '{{ item }}.conf.j2'
+    dest: /etc/xbps.d/{{ item }}.conf
+    owner: root
+    group: root
+    mode: '0644'
+  with_items: '{{ xbps_enabled_repositories }}'
+- name: Sync XBPS
+  community.general.xbps:
+    update_cache: true

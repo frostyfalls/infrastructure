@@ -1,0 +1,6 @@
+---
+xbps_enabled_repositories:
+  - 00-repository-main
+  - 00-repository-nonfree
+  - 10-repository-multilib
+  - 10-repository-multilib-nonfree

@@ -1,0 +1,7 @@
+---
+xbps_enabled_repositories:
+  - 00-repository-main
+xbps_repository_main: https://repo-fastly.voidlinux.org/current
+xbps_repository_nonfree: https://repo-fastly.voidlinux.org/current/nonfree
+xbps_repository_multilib: https://repo-fastly.voidlinux.org/current/multilib
+xbps_repository_multilib_nonfree: https://repo-fastly.voidlinux.org/current/multilib/nonfree
