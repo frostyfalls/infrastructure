@@ -11,16 +11,18 @@
   tasks:
     - name: Check if Python 3 is present
       ansible.builtin.raw: command -v {{ ansible_python_interpreter | default('python3') }}
-      register: python_present
+      register: check_python3
       changed_when: false
       failed_when: false
     - name: Install Python 3
       ansible.builtin.raw: xbps-install -Sy python3
-      when: python_present.rc != 0
+      when: check_python3.rc != 0
+      register: install_python3
+      changed_when: install_python3.rc == 0
     - name: Create bootstrap user
       ansible.builtin.user:
         name: '{{ bootstrap_user_name }}'
-        password: '{{ bootstrap_user_password | password_hash("sha512", "P@ssw0rd$@lt") }}'
+        password: '{{ bootstrap_user_password | password_hash("sha512", "PasswordSalt") }}'
         groups: '{{ bootstrap_user_groups }}'
         append: true
         state: present
@@ -36,3 +38,69 @@
         line: '%wheel ALL=(ALL:ALL) ALL'
         state: present
         validate: visudo -cf %s
+    - name: Install nftables
+      community.general.xbps:
+        name:
+          - nftables
+          - runit-nftables
+        state: present
+    - name: Create nftables rules directories
+      ansible.builtin.file:
+        path: /etc/nftables/{{ item }}
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+      with_items:
+        - inbound-rules.d
+        - forward-rules.d
+    - name: Configure nftables
+      ansible.builtin.copy:
+        dest: /etc/nftables.conf
+        owner: root
+        group: root
+        mode: '0644'
+        content: |
+          flush ruleset
+
+          table inet firewall {
+              chain inbound {
+                  type filter hook input priority 0; policy drop;
+                  include "/etc/nftables/inbound-rules.d/*.conf"
+              }
+              chain forward {
+                  type filter hook forward priority 0; policy drop;
+                  include "/etc/nftables/forward-rules.d/*.conf"
+              }
+          }
+      notify:
+        - Apply nftables rulesets
+    - name: Create base inbound rules
+      ansible.builtin.copy:
+        dest: /etc/nftables/inbound-rules.d/10-base.conf
+        owner: root
+        group: root
+        mode: '0644'
+        content: |
+          ct state vmap { established : accept, related : accept, invalid : drop }
+          iifname lo accept
+          icmp type echo-request limit rate 5/second accept
+          icmpv6 type { nd-neighbor-solicit, nd-router-advert, nd-neighbor-advert } accept
+          icmpv6 type echo-request limit rate 5/second accept
+      notify:
+        - Apply nftables rulesets
+    - name: Create SSH inbound rule
+      ansible.builtin.copy:
+        dest: /etc/nftables/inbound-rules.d/20-ssh.conf
+        owner: root
+        group: root
+        mode: '0644'
+        content: |
+          tcp dport ssh accept
+      notify:
+        - Apply nftables rulesets
+  handlers:
+    - name: Apply nftables rulesets
+      ansible.builtin.command: nft -f /etc/nftables.conf
+      register: apply_nftables
+      changed_when: apply_nftables.rc == 0
