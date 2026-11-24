@@ -1,0 +1,4 @@
+---
+profile: basic
+skip_list:
+  - name[play]
