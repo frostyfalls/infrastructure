@@ -1,0 +1,6 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: Install Python 3
+      ansible.builtin.raw: xbps-install -Sy python3
