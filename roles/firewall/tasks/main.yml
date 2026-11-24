@@ -1,0 +1,49 @@
+---
+- name: Install packages
+  community.general.xbps:
+    name:
+      - nftables
+      - runit-nftables
+    state: present
+- name: Create rule directories
+  ansible.builtin.file:
+    path: /etc/nftables/{{ item }}
+    owner: root
+    group: root
+    mode: '0755'
+    state: directory
+  with_items:
+    - inbound-rules.d
+    - forward-rules.d
+- name: Create main ruleset
+  ansible.builtin.copy:
+    src: nftables.conf
+    dest: /etc/nftables.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Apply nftables rulesets
+- name: Configure base inbound rules
+  ansible.builtin.copy:
+    src: '{{ item }}'
+    dest: /etc/nftables/inbound-rules.d/{{ item }}
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Apply nftables rulesets
+  with_items:
+    - 10-inbound-base.conf
+    - 20-inbound-ssh.conf
+- name: Configure base forward rules
+  ansible.builtin.copy:
+    src: '{{ item }}'
+    dest: /etc/nftables/forward-rules.d/{{ item }}
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Apply nftables rulesets
+  with_items:
+    - 10-forward-base.conf

@@ -1,0 +1,5 @@
+---
+- name: Apply nftables rulesets
+  ansible.builtin.command: nft -f /etc/nftables.conf
+  register: apply_nftables
+  changed_when: apply_nftables.rc == 0
