@@ -3,3 +3,5 @@
   become: true
   roles:
     - { role: xbps }
+    - { role: dns }
+    - { role: dhcpcd }

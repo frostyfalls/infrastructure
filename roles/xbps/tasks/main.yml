@@ -14,6 +14,6 @@
     group: root
     mode: '0644'
   with_items: '{{ xbps_enabled_repositories }}'
-- name: Sync XBPS
+- name: Update XBPS cache
   community.general.xbps:
     update_cache: true

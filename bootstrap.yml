@@ -10,7 +10,7 @@
     bootstrap_user_password: bootstrap
   tasks:
     - name: Check if Python 3 is present
-      ansible.builtin.raw: command -v {{ ansible_python_interpreter | default('python3') }}
+      ansible.builtin.raw: command -v {{ ansible_python_interpreter | default("python3") }}
       register: check_python3
       changed_when: false
       failed_when: false

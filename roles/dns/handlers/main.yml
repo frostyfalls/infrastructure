@@ -1,0 +1,4 @@
+---
+- name: Update running hostname
+  ansible.builtin.hostname:
+    name: '{{ dns_hostname }}'
