@@ -1,0 +1,10 @@
+---
+- name: Install cronie
+  community.general.xbps:
+    name: cronie
+    state: present
+- name: Enable cronie service
+  community.general.runit:
+    name: cronie
+    state: started
+    enabled: true

@@ -5,3 +5,4 @@
     - { role: xbps }
     - { role: dns }
     - { role: dhcpcd }
+    - { role: unattended-updates }
