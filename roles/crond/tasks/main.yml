@@ -15,7 +15,7 @@
     not (crond_alternative.stat.islnk | default(false)) or
     (crond_alternative.stat.lnk_source | default('')) != '/etc/sv/cronie'
   notify:
-    - Restart ntpd service
+    - Restart crond service
 
 - name: Enable crond service
   community.general.runit:
