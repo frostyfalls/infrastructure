@@ -1,0 +1,16 @@
+---
+system_present_packages:
+  - miniflux
+  - soju
+  # group_vars/all.yml -- no way to merge lists...
+  - bash-completion
+  - neovim
+  - ripgrep
+  - rsync
+  - tmux
+postgresql_users:
+  - { name: _miniflux }
+  - { name: _soju }
+postgresql_databases:
+  - { name: miniflux, owner: _miniflux }
+  - { name: soju, owner: _soju }

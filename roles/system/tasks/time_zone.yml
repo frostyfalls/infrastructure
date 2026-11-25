@@ -1,0 +1,9 @@
+---
+- name: Set time zone
+  ansible.builtin.file:
+    src: '/usr/share/zoneinfo/{{ system_time_zone }}'
+    dest: /etc/localtime
+    owner: root
+    group: root
+    mode: '0644'
+    state: link

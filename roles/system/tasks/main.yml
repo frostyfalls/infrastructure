@@ -1,4 +1,5 @@
 ---
+- ansible.builtin.import_tasks: time_zone.yml # noqa name[missing]
 - ansible.builtin.import_tasks: user.yml # noqa name[missing]
 - ansible.builtin.import_tasks: sudo.yml # noqa name[missing]
 - ansible.builtin.import_tasks: sshd.yml # noqa name[missing]

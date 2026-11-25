@@ -1,0 +1,66 @@
+---
+- name: Install PostgreSQL and related tools
+  community.general.xbps:
+    name:
+      - 'postgresql{{ postgresql_version }}'
+      - 'postgresql{{ postgresql_version }}-client'
+      - 'postgresql{{ postgresql_version }}-contrib'
+      - python3-psycopg2
+
+- name: Configure initdb options
+  ansible.builtin.lineinfile:
+    path: '/etc/psql{{ postgresql_version }}/default/postgresql'
+    regexp: ^INITOPTS=
+    line: 'INITOPTS="{{ postgresql_initdb_options }}"'
+
+- name: Configure PostgreSQL server
+  ansible.builtin.lineinfile:
+    path: '/etc/psql{{ postgresql_version }}/postgresql/postgresql.conf'
+    regexp: '{{ item.regexp }}'
+    line: '{{ item.line }}'
+  with_items:
+    - regexp: '^#?listen_addresses = '
+      line: 'listen_addresses = {{ postgresql_listen_addresses | join(",") }}'
+    - regexp: '^#?port = '
+      line: 'port = {{ postgresql_port }}'
+    - regexp: '^#?max_connections = '
+      line: 'max_connections = {{ postgresql_max_connections }}'
+  notify:
+    - Restart PostgreSQL service
+
+- name: Enable PostgreSQL service
+  community.general.runit:
+    name: 'postgresql{{ postgresql_version }}'
+    state: started
+    enabled: true
+
+- name: Wait until the data directory is created
+  ansible.builtin.wait_for:
+    path: '{{ postgresql_data_dir }}/PG_VERSION'
+    state: present
+
+- name: Configure PostgreSQL host-based authentication
+  ansible.builtin.template:
+    src: pg_hba.conf.j2
+    dest: '{{ postgresql_data_dir }}/pg_hba.conf'
+    owner: '{{ postgresql_user }}'
+    group: '{{ postgresql_group }}'
+    mode: '0600'
+
+- name: Ensure PostgreSQL users are present
+  community.postgresql.postgresql_user:
+    name: '{{ item.name }}'
+    password: '{{ item.password | default(omit) }}'
+  with_items: '{{ postgresql_users }}'
+  become: true
+  become_user: '{{ postgresql_user }}'
+
+- name: Ensure PostgreSQL databases are present
+  community.postgresql.postgresql_db:
+    name: '{{ item.name }}'
+    lc_collate: '{{ item.lc_collate | default("en_US.UTF-8") }}'
+    lc_ctype: '{{ item.lc_ctype | default("en_US.UTF-8") }}'
+    owner: '{{ item.owner | default(postgresql_user) }}'
+  with_items: '{{ postgresql_databases }}'
+  become: true
+  become_user: '{{ postgresql_user }}'

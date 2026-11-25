@@ -7,6 +7,7 @@
       ansible.builtin.raw: 'command -v {{ ansible_python_interpreter | default("python3") }}'
       register: check_python3
       changed_when: false
+
     - name: Install Python 3
       ansible.builtin.raw: xbps-install -Sy python3
       when: check_python3.rc != 0

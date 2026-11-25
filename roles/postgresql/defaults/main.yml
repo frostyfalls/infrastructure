@@ -1,0 +1,19 @@
+---
+postgresql_version: 18
+postgresql_user: postgres
+postgresql_group: '{{ postgresql_user }}'
+postgresql_data_dir: '/var/lib/postgresql{{ postgresql_version }}/data'
+postgresql_bin_dir: '/usr/lib/psql{{ postgresql_version }}/bin'
+postgresql_auth_method: scram-sha-256
+postgresql_initdb_options: '-A {{ postgresql_auth_method }} --auth-local=peer --locale=en_US.UTF-8'
+postgresql_listen_addresses:
+  - localhost
+postgresql_port: 5432
+postgresql_max_connections: 100
+postgresql_hba_entries:
+  - { type: local, database: all, user: all, auth_method: peer }
+  - { type: host, database: all, user: all, address: 127.0.0.1/32, auth_method: '{{ postgresql_auth_method }}' }
+  # noqa yaml[quoted-strings]
+  - { type: host, database: all, user: all, address: '::1/128', auth_method: '{{ postgresql_auth_method }}' }
+postgresql_users: []
+postgresql_databases: []

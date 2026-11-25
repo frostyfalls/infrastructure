@@ -3,9 +3,10 @@
   hosts: all
   become: true
   roles:
-    # - role: xbps
+    - role: xbps
     - role: system
-    # - role: ntpd
-    # - role: network
-    # - role: firewall
-    # - role: crond
+    - role: network
+    - role: ntpd
+    - role: crond
+    - role: firewall
+    - role: unattended_updates
