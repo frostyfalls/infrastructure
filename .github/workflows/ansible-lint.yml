@@ -12,4 +12,4 @@ jobs:
       - name: Install ansible-lint
         run: apk add --no-cache ansible-lint
       - name: Run ansible-lint
-        run: ansible-lint
+        run: ansible-lint --offline -q base.yml bootstrap.yml group_vars host_vars roles
