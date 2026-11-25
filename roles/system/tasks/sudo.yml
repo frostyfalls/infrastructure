@@ -1,8 +1,8 @@
 ---
 - name: Add system sudo group to sudoers
-  ansible.builtin.lineinfile:
-    path: /etc/sudoers
-    regexp: '^%{{ system_sudo_group }}'
-    line: '%{{ system_sudo_group }} ALL=(ALL:ALL) ALL'
-    state: present
-    validate: /usr/sbin/visudo -cf %s
+  community.general.sudoers:
+    name: system-sudo-group
+    group: '{{ system_sudo_group }}'
+    commands: ALL
+    runas: ALL:ALL
+    nopassword: false
