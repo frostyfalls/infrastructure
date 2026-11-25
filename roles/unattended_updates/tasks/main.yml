@@ -2,7 +2,7 @@
 - name: Create unattended-updates.sh script
   ansible.builtin.template:
     src: unattended-updates.sh.j2
-    dest: /usr/local/scripts/unattended-updates.sh
+    dest: '{{ usr_local_scripts_directory }}/unattended-updates.sh'
     owner: root
     group: root
     mode: '0755'
@@ -14,4 +14,4 @@
     hour: '01'
     user: root
     cron_file: 01-unattended-updates
-    job: /usr/local/scripts/unattended-updates.sh
+    job: '{{ usr_local_scripts_directory }}/unattended-updates.sh'

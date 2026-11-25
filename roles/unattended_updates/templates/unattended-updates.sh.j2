@@ -1,4 +1,5 @@
 #!/bin/sh
+{{ ansible_managed | ansible.builtin.comment }}
 xbps-install -Syu \
 	&& xbps-remove -Oyo \
 	&& vkpurge rm all
