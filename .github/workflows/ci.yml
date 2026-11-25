@@ -11,4 +11,4 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - run: apk add --no-cache ansible-lint
-      - run: ansible-lint --offline -q
+      - run: ansible-lint
