@@ -1,13 +1,13 @@
 ---
 - name: Check for an SSH host key
   ansible.builtin.stat:
-    path: /etc/ssh/ssh_host_{{ system_sshd_host_key }}_key
+    path: '/etc/ssh/ssh_host_{{ system_sshd_host_key }}_key'
   register: system_sshd_host_check
 
 - name: Generate SSH host keys
   ansible.builtin.command: ssh-keygen -A
   args:
-    creates: /etc/ssh/ssh_host_{{ system_sshd_host_key }}_key
+    creates: '/etc/ssh/ssh_host_{{ system_sshd_host_key }}_key'
   when: not system_sshd_host_check.stat.exists
 
 - name: Configure SSH daemon
