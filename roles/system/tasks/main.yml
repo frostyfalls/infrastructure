@@ -1,5 +1,5 @@
 ---
-- ansible.builtin.import_tasks: user.yml
-- ansible.builtin.import_tasks: sudo.yml
-- ansible.builtin.import_tasks: sshd.yml
-- ansible.builtin.import_tasks: packages.yml
+- ansible.builtin.import_tasks: user.yml # noqa name[missing]
+- ansible.builtin.import_tasks: sudo.yml # noqa name[missing]
+- ansible.builtin.import_tasks: sshd.yml # noqa name[missing]
+- ansible.builtin.import_tasks: packages.yml # noqa name[missing]

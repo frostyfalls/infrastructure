@@ -1,5 +1,5 @@
 ---
-- name: 'Add {{ system_sudo_group }} group to sudoers'
+- name: Add system sudo group to sudoers
   ansible.builtin.lineinfile:
     path: /etc/sudoers
     regexp: '^%{{ system_sudo_group }}'

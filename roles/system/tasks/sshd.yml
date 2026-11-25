@@ -6,6 +6,8 @@
 
 - name: Generate SSH host keys
   ansible.builtin.command: ssh-keygen -A
+  args:
+    creates: /etc/ssh/ssh_host_ed25519_key
   when: not system_ed25519_key.stat.exists
 
 - name: Configure SSH daemon
