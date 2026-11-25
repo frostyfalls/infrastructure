@@ -7,3 +7,4 @@ system_user_groups:
 system_user_key: ''
 system_present_packages: []
 system_absent_packages: []
+system_sshd_host_key: ed25519
