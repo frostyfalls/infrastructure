@@ -1,0 +1,16 @@
+name: CI
+on: [push]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  ansible-lint:
+    runs-on: ubuntu-latest
+    container:
+      image: docker.io/alpine:3.24
+    steps:
+      - run: |
+          pwd
+          find
+          apk add --no-cache ansible-lint
+          ansible-lint --offline -q
