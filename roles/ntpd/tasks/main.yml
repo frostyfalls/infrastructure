@@ -1,0 +1,34 @@
+---
+- name: Install chrony
+  community.general.xbps:
+    name: chrony
+    state: present
+
+- name: Configure chrony
+  ansible.builtin.template:
+    src: chrony.conf.j2
+    dest: /etc/chrony.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Restart ntpd service
+
+- name: Check current ntpd alternative
+  ansible.builtin.stat:
+    path: /etc/sv/ntpd
+  register: ntpd_alternative
+
+- name: Configure ntpd alternative
+  ansible.builtin.command: xbps-alternatives -s chrony ntpd
+  changed_when: >-
+    not (ntpd_alternative.stat.islnk | default(false)) or
+    (ntpd_alternative.stat.lnk_source | default('')) != '/etc/sv/chronyd'
+  notify:
+    - Restart ntpd service
+
+- name: Enable ntpd service
+  community.general.runit:
+    name: ntpd
+    state: started
+    enabled: true

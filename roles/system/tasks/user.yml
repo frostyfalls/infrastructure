@@ -1,0 +1,16 @@
+---
+- name: Create system user
+  ansible.builtin.user:
+    name: '{{ system_user_name }}'
+    password: '{{ system_user_password | password_hash("sha512") }}'
+    groups: '{{ system_user_groups }}'
+    append: true
+    update_password: on_create
+
+- name: Add SSH authorized key to system user
+  ansible.posix.authorized_key:
+    user: '{{ system_user_name }}'
+    key: '{{ system_user_key }}'
+  when: >-
+    system_user_key is defined and
+    system_user_key | trim | length > 0

@@ -1,13 +1,13 @@
 ---
-- name: Install packages
+- name: Install nftables
   community.general.xbps:
     name:
       - nftables
       - runit-nftables
-    state: present
-- name: Create rule directories
+
+- name: Create nftables rules directories
   ansible.builtin.file:
-    path: /etc/nftables/{{ item }}
+    path: '/etc/nftables/{{ item }}'
     owner: root
     group: root
     mode: '0755'
@@ -15,35 +15,44 @@
   with_items:
     - inbound-rules.d
     - forward-rules.d
-- name: Create main ruleset
-  ansible.builtin.copy:
-    src: nftables.conf
+  loop_control:
+    label: '/etc/nftables/{{ item }}'
+
+- name: Create /etc/nftables.conf
+  ansible.builtin.template:
+    src: nftables.conf.j2
     dest: /etc/nftables.conf
     owner: root
     group: root
     mode: '0644'
   notify:
-    - Apply nftables rulesets
-- name: Configure base inbound rules
-  ansible.builtin.copy:
-    src: '{{ item }}'
-    dest: /etc/nftables/inbound-rules.d/{{ item }}
+    - Apply firewall rules
+
+- name: Create nftables inbound rules
+  ansible.builtin.template:
+    src: '{{ item }}.j2'
+    dest: '/etc/nftables/inbound-rules.d/{{ item }}'
     owner: root
     group: root
     mode: '0644'
   notify:
-    - Apply nftables rulesets
+    - Apply firewall rules
   with_items:
     - 10-inbound-base.conf
     - 20-inbound-ssh.conf
-- name: Configure base forward rules
-  ansible.builtin.copy:
-    src: '{{ item }}'
-    dest: /etc/nftables/forward-rules.d/{{ item }}
+  loop_control:
+    label: '/etc/nftables/inbound-rules.d/{{ item }}'
+
+- name: Create nftables forward rules
+  ansible.builtin.template:
+    src: '{{ item }}.j2'
+    dest: '/etc/nftables/forward-rules.d/{{ item }}'
     owner: root
     group: root
     mode: '0644'
   notify:
-    - Apply nftables rulesets
+    - Apply firewall rules
   with_items:
     - 10-forward-base.conf
+  loop_control:
+    label: '/etc/nftables/forward-rules.d/{{ item }}'

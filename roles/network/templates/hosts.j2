@@ -1,0 +1,6 @@
+{{ ansible_managed | ansible.builtin.comment }}
+127.0.0.1 localhost {{ network_dns_fqhn }} {{ network_dns_hostname }}
+::1 localhost {{ network_dns_fqhn }} {{ network_dns_hostname }}
+{% for host in network_dns_hosts %}
+{{ host.addr }} {{ host.name }}
+{% endfor %}

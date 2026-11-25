@@ -1,4 +1,0 @@
----
-dependencies:
-  - role: usr-local-scripts
-  - role: cron

@@ -1,0 +1,4 @@
+---
+dependencies:
+  - role: usr_local_scripts
+  - role: crond

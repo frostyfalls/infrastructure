@@ -1,6 +1,9 @@
 ---
-dns_hostname: '{{ inventory_hostname }}'
-dns_static_resolvers:
-  - 9.9.9.9
-  - 2620:fe::fe
-dns_hosts: []
+system_user_key: >-
+  ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEFMFz+nvsFqyTMRx4aHrABoHQPHCs7eR1C80EK2slXR
+system_present_packages:
+  - bash-completion
+  - neovim
+  - ripgrep
+  - rsync
+  - tmux

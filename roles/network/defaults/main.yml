@@ -1,0 +1,7 @@
+---
+network_dns_hostname: '{{ inventory_hostname }}'
+network_dns_fqhn: '{{ network_dns_hostname }}'
+network_dns_hosts: []
+network_dns_resolvers:
+  - 9.9.9.9
+  - 2620:fe::fe

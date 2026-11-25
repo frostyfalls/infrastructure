@@ -1,0 +1,17 @@
+---
+- name: Create unattended-updates.sh script
+  ansible.builtin.copy:
+    src: unattended-updates.sh
+    dest: /usr/local/scripts/unattended-updates.sh
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Create unattended-updates crontab
+  ansible.builtin.cron:
+    name: unattended-updates
+    minute: 30
+    hour: '01'
+    user: root
+    cron_file: 01-unattended-updates
+    job: /usr/local/scripts/unattended-updates.sh

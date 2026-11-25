@@ -1,5 +1,0 @@
-127.0.0.1 localhost {{ dns_fqhn | default(dns_hostname) }} {{ dns_hostname | default(inventory_hostname) }}
-::1 localhost {{ dns_fqhn | default(dns_hostname) }} {{ dns_hostname | default(inventory_hostname) }}
-{% for host in dns_hosts | default([]) %}
-{{ host.addr }} {{ host.name }}
-{% endfor %}

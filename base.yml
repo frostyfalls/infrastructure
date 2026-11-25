@@ -1,9 +1,11 @@
 ---
-- hosts: all
+- name: Provision all hosts
+  hosts: all
   become: true
   roles:
-    - { role: xbps }
-    - { role: dns }
-    - { role: dhcpcd }
-    - { role: firewall }
-    - { role: unattended-updates }
+    - role: xbps
+    - role: system
+    - role: ntpd
+    - role: network
+    - role: firewall
+    - role: crond

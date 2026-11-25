@@ -1,0 +1,9 @@
+---
+- name: Set system hostname
+  ansible.builtin.hostname:
+    name: '{{ network_dns_hostname }}'
+
+- name: Restart dhcpcd service
+  community.general.runit:
+    name: dhcpcd
+    state: restarted

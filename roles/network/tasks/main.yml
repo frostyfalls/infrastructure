@@ -1,0 +1,39 @@
+---
+- name: Configure /etc/hostname
+  ansible.builtin.template:
+    src: hostname.j2
+    dest: /etc/hostname
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Set system hostname
+
+- name: Configure /etc/hosts
+  ansible.builtin.template:
+    src: hosts.j2
+    dest: /etc/hosts
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Configure /etc/resolv.conf
+  ansible.builtin.template:
+    src: resolv.conf.j2
+    dest: /etc/resolv.conf
+    owner: root
+    group: root
+    mode: '0644'
+  when: >-
+    network_dns_resolvers is defined and
+    network_dns_resolvers | length > 0
+
+- name: Configure /etc/dhcpcd.conf
+  ansible.builtin.template:
+    src: dhcpcd.conf.j2
+    dest: /etc/dhcpcd.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Restart dhcpcd service

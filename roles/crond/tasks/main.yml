@@ -1,0 +1,24 @@
+---
+- name: Install cronie
+  community.general.xbps:
+    name: cronie
+    state: present
+
+- name: Check current crond alternative
+  ansible.builtin.stat:
+    path: /etc/sv/crond
+  register: crond_alternative
+
+- name: Configure crond alternative
+  ansible.builtin.command: xbps-alternatives -s cronie crond
+  changed_when: >-
+    not (crond_alternative.stat.islnk | default(false)) or
+    (crond_alternative.stat.lnk_source | default('')) != '/etc/sv/cronie'
+  notify:
+    - Restart ntpd service
+
+- name: Enable crond service
+  community.general.runit:
+    name: crond
+    state: started
+    enabled: true

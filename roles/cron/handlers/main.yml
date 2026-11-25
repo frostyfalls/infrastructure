@@ -1,5 +1,0 @@
----
-- name: Restart cronie service
-  community.general.runit:
-    name: cronie
-    state: restarted

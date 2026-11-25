@@ -1,5 +1,0 @@
----
-- name: Restart dhcpcd service
-  community.general.runit:
-    name: dhcpcd
-    state: restarted

@@ -1,0 +1,10 @@
+---
+- name: Restart crond service
+  community.general.runit:
+    name: crond
+    state: restarted
+
+- name: Reload crond service
+  community.general.runit:
+    name: crond
+    state: reloaded

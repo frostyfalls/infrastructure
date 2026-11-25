@@ -1,0 +1,10 @@
+---
+- name: Install specified present packages
+  community.general.xbps:
+    name: '{{ system_present_packages }}'
+    state: present
+
+- name: Remove specified absent packages
+  community.general.xbps:
+    name: '{{ system_absent_packages }}'
+    state: absent

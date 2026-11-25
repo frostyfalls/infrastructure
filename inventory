@@ -1,4 +1,0 @@
-[all]
-aioi ansible_connection=local
-
-# vim: ft=dosini

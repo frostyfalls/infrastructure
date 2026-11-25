@@ -1,0 +1,10 @@
+---
+- name: Restart ntpd service
+  community.general.runit:
+    name: ntpd
+    state: restarted
+
+- name: Reload ntpd service
+  community.general.runit:
+    name: ntpd
+    state: reloaded

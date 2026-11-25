@@ -1,0 +1,33 @@
+---
+- name: Check for an SSH host key
+  ansible.builtin.stat:
+    path: /etc/ssh/ssh_host_ed25519_key
+  register: system_ed25519_key
+
+- name: Generate SSH host keys
+  ansible.builtin.command: ssh-keygen -A
+  when: not system_ed25519_key.stat.exists
+
+- name: Configure SSH daemon
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '{{ item.regexp }}'
+    line: '{{ item.line }}'
+    validate: /usr/sbin/sshd -t -f %s
+  with_items:
+    - regexp: ^#?PermitRootLogin
+      line: PermitRootLogin no
+    - regexp: ^#?PasswordAuthentication
+      line: PasswordAuthentication no
+    - regexp: ^#?PubkeyAuthentication
+      line: PubkeyAuthentication yes
+    - regexp: ^#?MaxAuthTries
+      line: MaxAuthTries 2
+    - regexp: ^#?PrintMotd
+      line: PrintMotd yes
+    - regexp: ^#?HostKey /etc/ssh/ssh_host_ed25519_key
+      line: HostKey /etc/ssh/ssh_host_ed25519_key
+    - regexp: ^#?HostKey /etc/ssh/ssh_host_rsa_key
+      line: HostKey /etc/ssh/ssh_host_rsa_key
+  loop_control:
+    label: '{{ item.line }}'

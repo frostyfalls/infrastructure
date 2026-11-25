@@ -1,40 +1,14 @@
 ---
-- hosts: all
+- name: Bootstrap new host with Python 3
+  hosts: all
   become: true
-  vars:
-    bootstrap_user_name: user
-    bootstrap_user_groups:
-      - wheel
-    bootstrap_user_key: |
-      ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEFMFz+nvsFqyTMRx4aHrABoHQPHCs7eR1C80EK2slXR
-    bootstrap_user_password: bootstrap
   tasks:
     - name: Check if Python 3 is present
-      ansible.builtin.raw: command -v {{ ansible_python_interpreter | default("python3") }}
+      ansible.builtin.raw: 'command -v {{ ansible_python_interpreter | default("python3") }}'
       register: check_python3
       changed_when: false
-      failed_when: false
     - name: Install Python 3
       ansible.builtin.raw: xbps-install -Sy python3
       when: check_python3.rc != 0
       register: install_python3
       changed_when: install_python3.rc == 0
-    - name: Create bootstrap user
-      ansible.builtin.user:
-        name: '{{ bootstrap_user_name }}'
-        password: '{{ bootstrap_user_password | password_hash("sha512", "PasswordSalt") }}'
-        groups: '{{ bootstrap_user_groups }}'
-        append: true
-        state: present
-    - name: Add SSH authorized key to bootstrap user
-      ansible.posix.authorized_key:
-        user: '{{ bootstrap_user_name }}'
-        key: '{{ bootstrap_user_key }}'
-        state: present
-    - name: Ensure wheel members are able to execute sudo commands
-      ansible.builtin.lineinfile:
-        path: /etc/sudoers
-        regexp: '^%wheel'
-        line: '%wheel ALL=(ALL:ALL) ALL'
-        state: present
-        validate: visudo -cf %s

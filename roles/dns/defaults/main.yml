@@ -1,6 +1,0 @@
-dns_hostname: '{{ inventory_hostname }}'
-dns_fqhn: '{{ dns_hostname }}'
-dns_hosts: []
-dns_static_resolvers:
-  - 9.9.9.9
-  - 2620:fe::fe

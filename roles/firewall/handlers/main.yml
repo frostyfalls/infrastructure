@@ -1,5 +1,5 @@
 ---
-- name: Apply nftables rulesets
+- name: Apply firewall rules
   ansible.builtin.command: nft -f /etc/nftables.conf
-  register: apply_nftables
-  changed_when: apply_nftables.rc == 0
+  register: firewall_rules
+  changed_when: firewall_rules.rc == 0
