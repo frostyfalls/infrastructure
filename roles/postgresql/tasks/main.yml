@@ -2,35 +2,35 @@
 - name: Install PostgreSQL and related tools
   community.general.xbps:
     name:
-      - 'postgresql{{ postgresql_version }}'
-      - 'postgresql{{ postgresql_version }}-client'
-      - 'postgresql{{ postgresql_version }}-contrib'
+      - postgresql{{ postgresql_version }}
+      - postgresql{{ postgresql_version }}-client
+      - postgresql{{ postgresql_version }}-contrib
       - python3-psycopg2
 
 - name: Configure initdb options
   ansible.builtin.lineinfile:
-    path: '/etc/psql{{ postgresql_version }}/default/postgresql'
+    path: /etc/psql{{ postgresql_version }}/default/postgresql
     regexp: ^INITOPTS=
-    line: 'INITOPTS="{{ postgresql_initdb_options }}"'
+    line: INITOPTS="{{ postgresql_initdb_options }}"
 
 - name: Configure PostgreSQL server
   ansible.builtin.lineinfile:
-    path: '/etc/psql{{ postgresql_version }}/postgresql/postgresql.conf'
+    path: /etc/psql{{ postgresql_version }}/postgresql/postgresql.conf
     regexp: '{{ item.regexp }}'
     line: '{{ item.line }}'
   with_items:
     - regexp: '^#?listen_addresses = '
-      line: 'listen_addresses = {{ postgresql_listen_addresses | join(",") }}'
+      line: listen_addresses = {{ postgresql_listen_addresses | join(",") }}
     - regexp: '^#?port = '
-      line: 'port = {{ postgresql_port }}'
+      line: port = {{ postgresql_port }}
     - regexp: '^#?max_connections = '
-      line: 'max_connections = {{ postgresql_max_connections }}'
+      line: max_connections = {{ postgresql_max_connections }}
   notify:
     - Restart PostgreSQL service
 
 - name: Enable PostgreSQL service
   community.general.runit:
-    name: 'postgresql{{ postgresql_version }}'
+    name: postgresql{{ postgresql_version }}
     state: started
     enabled: true
 

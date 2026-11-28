@@ -1,5 +1,5 @@
 ---
-- name: 'Create {{ usr_local_scripts_directory }}'
+- name: Create {{ usr_local_scripts_directory }}
   ansible.builtin.file:
     path: '{{ usr_local_scripts_directory }}'
     owner: root

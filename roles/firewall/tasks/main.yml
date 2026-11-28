@@ -7,7 +7,7 @@
 
 - name: Create nftables rules directories
   ansible.builtin.file:
-    path: '/etc/nftables/{{ item }}'
+    path: /etc/nftables/{{ item }}
     owner: root
     group: root
     mode: '0755'
@@ -16,7 +16,7 @@
     - inbound-rules.d
     - forward-rules.d
   loop_control:
-    label: '/etc/nftables/{{ item }}'
+    label: /etc/nftables/{{ item }}
 
 - name: Create /etc/nftables.conf
   ansible.builtin.template:
@@ -31,7 +31,7 @@
 - name: Create nftables inbound rules
   ansible.builtin.template:
     src: '{{ item }}.j2'
-    dest: '/etc/nftables/inbound-rules.d/{{ item }}'
+    dest: /etc/nftables/inbound-rules.d/{{ item }}
     owner: root
     group: root
     mode: '0644'
@@ -41,12 +41,12 @@
     - 10-inbound-base.conf
     - 20-inbound-ssh.conf
   loop_control:
-    label: '/etc/nftables/inbound-rules.d/{{ item }}'
+    label: /etc/nftables/inbound-rules.d/{{ item }}
 
 - name: Create nftables forward rules
   ansible.builtin.template:
     src: '{{ item }}.j2'
-    dest: '/etc/nftables/forward-rules.d/{{ item }}'
+    dest: /etc/nftables/forward-rules.d/{{ item }}
     owner: root
     group: root
     mode: '0644'
@@ -55,4 +55,4 @@
   with_items:
     - 10-forward-base.conf
   loop_control:
-    label: '/etc/nftables/forward-rules.d/{{ item }}'
+    label: /etc/nftables/forward-rules.d/{{ item }}

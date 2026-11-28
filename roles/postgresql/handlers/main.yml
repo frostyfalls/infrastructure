@@ -1,5 +1,5 @@
 ---
 - name: Restart PostgreSQL service
   community.general.runit:
-    name: 'postgresql{{ postgresql_version }}'
+    name: postgresql{{ postgresql_version }}
     state: restarted
